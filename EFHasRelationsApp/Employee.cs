@@ -13,6 +13,8 @@ namespace EFHasRelationsApp
         public int? Age { set; get; }
         public List<Project> Projects { get; set; } = new();
 
+        public List<EmployeeProject> EmployeeProjects { get; set; } = new();
+
         //public EmployeeInfo? Info { set; get; }
         //public virtual Company? Company { set; get; }
         //public int? CompanyId { set; get; }

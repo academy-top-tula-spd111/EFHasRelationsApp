@@ -2,7 +2,22 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-CreateData();
+//CreateData();
+
+using(ApplicationContext context = new())
+{
+    var projects = context.Projects.Include(p => p.Employees).ToList();
+    foreach(var project in projects)
+    {
+        Console.WriteLine($"Project title: {project.Title}");
+        //foreach(Employee employee in project.Employees)
+        //{
+        //    Console.WriteLine($"\tName: {employee.Name}");
+        //}
+        foreach(var ep in project.EmployeeProjects)
+            Console.WriteLine($"\tName: {ep.Employee.Name} Date: {ep.StartDate.ToLongDateString()}");
+    }
+}
 
 //using (ApplicationContext context = new())
 //{
@@ -45,18 +60,64 @@ void CreateData()
             new(){ Title = "Modeling" },
         };
 
-        employees[0].Projects.Add(projects[0]);
-        employees[0].Projects.Add(projects[2]);
-
-        employees[1].Projects.Add(projects[0]);
-        employees[1].Projects.Add(projects[1]);
-
-        employees[2].Projects.Add(projects[1]);
-        employees[2].Projects.Add(projects[2]);
-
-
         context.Employees.AddRange(employees);
         context.Projects.AddRange(projects);
+
+
+        //employees[0].Projects.Add(projects[0]);
+        //employees[0].Projects.Add(projects[2]);
+
+        //employees[1].Projects.Add(projects[0]);
+        //employees[1].Projects.Add(projects[1]);
+
+        //employees[2].Projects.Add(projects[1]);
+        //employees[2].Projects.Add(projects[2]);
+
+        employees[0].EmployeeProjects
+                    .Add(new EmployeeProject()
+                    {
+                        Project = projects[0],
+                        StartDate = DateTime.Now.AddMonths(-4)
+                    });
+        employees[0].EmployeeProjects
+                    .Add(new EmployeeProject()
+                    {
+                        Project = projects[2],
+                        //StartDate = DateTime.Now.AddMonths(-4)
+                    });
+
+        employees[1].EmployeeProjects
+                    .Add(new EmployeeProject()
+                    {
+                        Project = projects[0],
+                        StartDate = DateTime.Now.AddMonths(-6)
+                    });
+        employees[1].EmployeeProjects
+                    .Add(new EmployeeProject()
+                    {
+                        Project = projects[1],
+                        StartDate = DateTime.Now.AddMonths(-1)
+                    });
+
+        employees[2].EmployeeProjects
+                    .Add(new EmployeeProject()
+                    {
+                        Project = projects[1],
+                        StartDate = DateTime.Now.AddDays(-5)
+                    });
+        employees[2].EmployeeProjects
+                    .Add(new EmployeeProject()
+                    {
+                        Project = projects[2],
+                        StartDate = DateTime.Now.AddDays(-15)
+                    });
+
+
+        //context.Employees.AddRange(employees);
+        //context.Projects.AddRange(projects);
+
+
+
 
         //List<EmployeeInfo> employeeInfos = new List<EmployeeInfo>()
         //{

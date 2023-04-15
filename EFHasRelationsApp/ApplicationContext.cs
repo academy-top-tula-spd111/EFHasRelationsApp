@@ -39,10 +39,30 @@ namespace EFHasRelationsApp
             //            .WithMany(c => c.Employees)
             //            .HasForeignKey(e => e.CompanyId);
 
-            modelBuilder.Entity<Employee>()
-                        .HasMany(e => e.Projects)
-                        .WithMany(p => p.Employees)
-                        .UsingEntity(rt => rt.ToTable("EmplProj"));
+            //modelBuilder.Entity<Employee>()
+            //            .HasMany(e => e.Projects)
+            //            .WithMany(p => p.Employees)
+            //            .UsingEntity(rt => rt.ToTable("EmplProj"));
+
+
+            modelBuilder.Entity<Project>()
+                        .HasMany(p => p.Employees)
+                        .WithMany(e => e.Projects)
+                        .UsingEntity<EmployeeProject>
+                        (
+                            j => j.HasOne(ep => ep.Employee)
+                                  .WithMany(e => e.EmployeeProjects)
+                                  .HasForeignKey(ep => ep.EmployeeId),
+                            j => j.HasOne(ep => ep.Project)
+                                  .WithMany(p => p.EmployeeProjects)
+                                  .HasForeignKey(ep => ep.ProjectId),
+                            j =>
+                            {
+                                j.Property(ep => ep.StartDate).HasDefaultValue(DateTime.Now);
+                                j.HasKey(ck => new { ck.EmployeeId, ck.ProjectId });
+                                j.ToTable("EmployeeProject");
+                            }
+                        );
 
         }
     }
